@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+* {
+  font-family: "Elms Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+}
+
+@layer utilities {
+  /* Hide scrollbar by default */
+  .notes-scroll {
+    overflow-y: hidden;
+  }
+
+  /* Show scrollbar on focus */
+  .notes-scroll:focus {
+    overflow-y: auto;
+  }
+
+  /* Optional: style scrollbar */
+  .notes-scroll:focus::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .notes-scroll:focus::-webkit-scrollbar-thumb {
+    background-color: #222;
+    border-radius: 9999px;
+    cursor: pointer;
+  }
+
+  .notes-container-scroll {
+    overflow-y: scroll;
+  }
+
+  /* Show scrollbar on focus */
+  .notes-container-scroll:focus {
+    overflow-y: auto;
+  }
+
+  /* Optional: style scrollbar */
+  .notes-container-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .notes-container-scroll::-webkit-scrollbar-thumb {
+    background-color: #222;
+    border-radius: 9999px;
+    cursor: pointer;
+  }
+}
