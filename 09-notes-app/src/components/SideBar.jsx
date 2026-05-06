@@ -16,7 +16,6 @@ function SideBar() {
         });
         const newNote = {content,date,color};
         setNotes([newNote,...notes]);
-        console.log(newNote)
     }
 
   return (
