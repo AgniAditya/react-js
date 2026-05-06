@@ -11,7 +11,7 @@ function HeroSection() {
       <h1 className='text-4xl'>Notes</h1>
       <div className='flex flex-wrap gap-7 notes-container-scroll'>
         {notes.map((note,index) => {
-          return <NoteBox key={notes.length - 1 - index} content={note.content} date={note.date} color={note.color}/>
+          return <NoteBox key={notes.length - 1 - index} id={index} content={note.content} date={note.date} color={note.color}/>
         })}
       </div>
     </div>

@@ -1,20 +1,31 @@
 import React, { useState } from 'react'
 import { Pencil , PencilOff} from 'lucide-react'
-import { Trash2 } from 'lucide-react';
+import { FileMinus } from 'lucide-react';
+import { useContext } from 'react'
+import { NotesContext } from '../context/notesContext'
 
 function NoteBox(props) {
     const [editable,setEditable] = useState(false);
     const [value,setValue] = useState(props.content);
+    const [notes,setNotes] = useContext(NotesContext)
     
-    function editNote() {
-        setEditable(!editable)
-    }
     function setContent(e) {
         setValue(e.target.value)
     }
-
-  return (
-    <div className={`w-60 h-60 rounded-2xl bg-${props.color}-400 p-2 flex flex-col items-center justify-between text-sm`}>
+    function editNote() {
+        setEditable(!editable)
+    }
+    function deleteNote(){
+        const deletedNote = notes.find((_,index) => index === props.id)
+        const newNotes = notes.filter((_,index) => {
+            return index !== props.id;
+        })
+        setEditable(false)
+        setNotes(newNotes)
+    }
+        
+    return (
+    <div className={`w-50 h-50 md:w-60 md:h-60 rounded-2xl bg-${props.color}-400 p-2 flex flex-col items-center justify-between text-sm`}>
         <textarea
         defaultValue={value}
         disabled={!editable} 
@@ -26,11 +37,18 @@ function NoteBox(props) {
             <div>
                 {props.date}
             </div>
-            <button className='bg-black w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-700' onClick={() => editNote()}>
-                {editable ? 
-                <PencilOff color="#ffffff" size={15}/>
-                : <Pencil color="#ffffff" size={15}/>}
-            </button>
+            <div className='flex gap-1'>
+                {editable ?
+                <button className='bg-black w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-gray-700' onClick={() => deleteNote()}>
+                    <FileMinus color="#ffffff" size={18}/> 
+                </button>
+                : <></>}
+                <button className='bg-black w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full hover:bg-gray-700' onClick={() => editNote()}>
+                    {editable ? 
+                    <PencilOff color="#ffffff" size={15}/>
+                    : <Pencil color="#ffffff" size={15}/>}
+                </button>
+            </div>
         </div>
     </div>
   )
