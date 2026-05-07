@@ -1,19 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SideBar from './components/SideBar'
 import HeroSection from './components/HeroSection'
 import BorderLine from './components/BorderLine'
 import { NotesContext } from './context/notesContext'
 
-
 function App() {
-  const data = [
-    {
-      content: "“I'm selfish, impatient and a little insecure. I make mistakes, I am out of control and at times hard to handle.” ― Marilyn Monroe",
-      date: "May 05,2026",
-      color: "amber"
-    }
-  ];
-  const [notes,setNotes] = useState(data);
+  const notesData = JSON.parse(localStorage.getItem('notes')) || [];
+  const [notes,setNotes] = useState(notesData);
 
   return (
     <NotesContext.Provider value={[notes,setNotes]}>

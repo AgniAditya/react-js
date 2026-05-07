@@ -20,6 +20,7 @@ function NoteBox(props) {
         const newNotes = notes.filter((_,index) => {
             return index !== props.id;
         })
+        localStorage.setItem('notes',JSON.stringify(newNotes))
         setEditable(false)
         setNotes(newNotes)
     }

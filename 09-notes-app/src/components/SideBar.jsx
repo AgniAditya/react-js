@@ -15,7 +15,9 @@ function SideBar() {
             year: "numeric",
         });
         const newNote = {content,date,color};
-        setNotes([newNote,...notes]);
+        const notesData = [newNote,...notes];
+        localStorage.setItem('notes',JSON.stringify(notesData));
+        setNotes(notesData);
     }
 
   return (
