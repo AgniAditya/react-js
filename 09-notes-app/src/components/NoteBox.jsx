@@ -14,6 +14,11 @@ function NoteBox(props) {
     }
     function editNote() {
         setEditable(!editable)
+        if(editable){
+            const notes = JSON.parse(localStorage.getItem('notes'));
+            notes[props.id].content = value;
+            localStorage.setItem('notes',JSON.stringify([...notes]));
+        }
     }
     function deleteNote(){
         const deletedNote = notes.find((_,index) => index === props.id)
