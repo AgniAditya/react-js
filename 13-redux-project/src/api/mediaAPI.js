@@ -6,12 +6,12 @@ const GIPHY_KEY = import.meta.env.VITE_GIPHY_KEY
 
 
 export async function getImages(query,page=1,per_page=10) {
-    const getImagesFromUnplash = await axios.get("https://api.unsplash.com/photos",{
+    const getImagesFromUnplash = await axios.get("https://api.unsplash.com/search/photos",{
         params: {query,page,per_page},
         headers: {Authorization: `Client-ID ${UNPLASH_KEY}`}
     })
 
-    return getImagesFromUnplash.data
+    return getImagesFromUnplash.data.results
 }
 
 
@@ -33,5 +33,5 @@ export async function getGIFs(query,page=1,per_page=10) {
         }
     })
 
-    return getGIFsFromGIPHY
+    return getGIFsFromGIPHY.data.data
 }

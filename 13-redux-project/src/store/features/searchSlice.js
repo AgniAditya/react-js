@@ -12,8 +12,6 @@ const searchSlice = createSlice({
     reducers: {
         setQuery : (state,action) => {
             state.query = action.payload;
-            console.log(state.query);
-            
         },
         setActiveTab: (state,action) => {
             state.activeTab = action.payload;
