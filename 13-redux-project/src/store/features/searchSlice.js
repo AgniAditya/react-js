@@ -24,6 +24,10 @@ const searchSlice = createSlice({
             state.result = action.payload;
             state.loading = false;
         },
+        appendResult: (state,action) => {
+            state.result.push(...action.payload)
+            state.loading = false;
+        },
         setError: (state,action) => {
             state.error = action.payload;
             state.loading = false;
@@ -39,6 +43,7 @@ export const {
     setActiveTab,
     setLoading,
     setResult,
+    appendResult,
     setError,
     clearResults
 } = searchSlice.actions
