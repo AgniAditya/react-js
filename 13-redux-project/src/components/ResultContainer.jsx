@@ -5,6 +5,7 @@ import { getGIFs, getImages, getVidoes } from '../api/mediaAPI';
 import { clearResults, setError, setLoading, setResult } from '../store/features/searchSlice';
 import Loading from './Loading';
 import Error from './Error';
+import EmptyCollection from './EmptyCollection';
 
 function ResultContainer() {
   const disptach = useDispatch();
@@ -71,6 +72,7 @@ function ResultContainer() {
   return (
     <div className='w-full justify-center flex flex-wrap gap-5 p-5'>
       {result.map((obj) => <ResultCard key={obj.id} item={obj}/> )}
+      {!loading && !error && result.length === 0 ? <EmptyCollection /> : <></>}
       {loading ? <Loading /> : <></>}
       {error ? <Error message={error.message}/> : <></>}
     </div>
