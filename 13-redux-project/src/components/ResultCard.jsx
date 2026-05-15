@@ -27,7 +27,6 @@ function ResultCard(props) {
     const newItems = oldItems.filter((obj) => obj.id !== item.id);
     localStorage.setItem("collections",JSON.stringify(newItems))
     setExist(false);
-    setResult(newItems)
   }
 
   return (
