@@ -7,21 +7,21 @@ import Loading from './Loading';
 import Error from './Error';
 
 function ResultContainer() {
-  const [counter,setCounter] = useState(0)
   const disptach = useDispatch();
   const {query,activeTab,result,loading,error} = useSelector((store) => store.search)
+  const {items} = useSelector((store) => store.collection)
 
   async function fetchData(){
     try {
       disptach(clearResults())
-      if(query.trim() === "" && activeTab !== "collections") {
+      if(query.trim() === "" && activeTab !== "collection") {
         return;
       }
       disptach(setLoading())
       
       let data;
-      if(activeTab === "collections"){
-        data = JSON.parse(localStorage.getItem("collections")) || [];
+      if(activeTab === "collection"){
+        data = JSON.parse(localStorage.getItem("collection")) || [];
       }
       else if(activeTab === "photo"){
         const res = await getImages(query);
@@ -66,7 +66,7 @@ function ResultContainer() {
   }
   useEffect(() => {
     fetchData()
-  },[activeTab,query])
+  },[activeTab,query,items])
 
   return (
     <div className='w-full justify-center flex flex-wrap gap-5 p-5'>

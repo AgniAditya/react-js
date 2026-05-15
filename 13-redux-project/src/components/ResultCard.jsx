@@ -1,32 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { clearResults, setResult } from '../store/features/searchSlice';
 import { Star } from 'lucide-react'
+import { addCollection, removeCollection } from '../store/features/collectionSlice'
 
 function ResultCard(props) {
   const item = props.item
+  const {activeTab} = useSelector((s) => s.search)
   const [hover,setHover] = useState(false)
-  const [exist,setExist] = useState(isExistInCollections())
+  const [exist,setExist] = useState(isExistInCollection())
+  const dispatch = useDispatch();
 
-  function isExistInCollections() {
-    const oldItems = JSON.parse(localStorage.getItem("collections")) || [];
+  function isExistInCollection() {
+    const oldItems = JSON.parse(localStorage.getItem("collection")) || [];
     const isExist = oldItems.find((obj) => obj.id === item.id);
     return isExist;
-  }
-
-  function addToCollections() {
-    const oldItems = JSON.parse(localStorage.getItem("collections")) || [];
-    if(isExistInCollections()) return;
-    const newItems = [...oldItems,item]
-    localStorage.setItem("collections",JSON.stringify(newItems))
-    setExist(true)
-  }
-
-  function removeFromCollections() {
-    const oldItems = JSON.parse(localStorage.getItem("collections"))
-    const newItems = oldItems.filter((obj) => obj.id !== item.id);
-    localStorage.setItem("collections",JSON.stringify(newItems))
-    setExist(false);
   }
 
   return (
@@ -48,14 +36,22 @@ function ResultCard(props) {
         <div className='absolute text-md font-semibold text-white bottom-2 p-5'>{item.title}</div>
         {exist ? 
           <button
-          onClick={() => removeFromCollections()} 
+          onClick={() => {
+            if(activeTab === "collection"){
+              dispatch(removeCollection(item))
+              setExist(false)
+            }
+          }} 
           className='absolute top-3 right-5 cursor-pointer bg-gray-950 rounded-full p-1'
           >
             <Star fill='white'/>
           </button> 
         : 
           <button
-          onClick={() => addToCollections()} 
+          onClick={() => {
+            dispatch(addCollection(item))
+            setExist(true)
+          }} 
           className='absolute top-3 right-5 cursor-pointer bg-gray-950 rounded-full p-1'
           >
             <Star color='white'/>

@@ -6,7 +6,7 @@ const searchSlice = createSlice({
         query: '',
         result: [],
         loading: false,
-        activeTab: 'collections',
+        activeTab: 'collection',
         error: null
     },
     reducers: {
