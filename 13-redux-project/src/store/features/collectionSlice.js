@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { setResult } from "./searchSlice";
+import { toast } from 'react-toastify';
 
 const collectionSlice = createSlice({
     name: 'collection',
@@ -19,9 +20,15 @@ const collectionSlice = createSlice({
             const newItems = oldItems.filter((obj) => obj.id !== item.id);
             localStorage.setItem("collection",JSON.stringify(newItems))
             state.items = newItems;
+        },
+        addToast: () => {
+            toast("added to collection")
+        },
+        removeToast: () => {
+            toast("removed from collection")
         }
     }
 })
 
-export const {addCollection,removeCollection} = collectionSlice.actions
+export const {addCollection,removeCollection,addToast,removeToast} = collectionSlice.actions
 export default collectionSlice.reducer

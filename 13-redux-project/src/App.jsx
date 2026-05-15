@@ -1,6 +1,7 @@
 import SearchBar from "./components/SearchBar"
 import Tabs from "./components/Tabs"
 import ResultContainer from './components/ResultContainer'
+import { ToastContainer } from 'react-toastify';
 
 function App() {
 
@@ -12,6 +13,7 @@ function App() {
           <Tabs />
         </div>
         <ResultContainer />
+        <ToastContainer />
       </div>
     </div>
   )

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { clearResults, setResult } from '../store/features/searchSlice';
 import { Star } from 'lucide-react'
-import { addCollection, removeCollection } from '../store/features/collectionSlice'
+import { addCollection, addToast, removeCollection, removeToast } from '../store/features/collectionSlice'
 
 function ResultCard(props) {
   const item = props.item
@@ -39,6 +39,7 @@ function ResultCard(props) {
           onClick={() => {
             if(activeTab === "collection"){
               dispatch(removeCollection(item))
+              dispatch(removeToast())
               setExist(false)
             }
           }} 
@@ -50,6 +51,7 @@ function ResultCard(props) {
           <button
           onClick={() => {
             dispatch(addCollection(item))
+            dispatch(addToast())
             setExist(true)
           }} 
           className='absolute top-3 right-5 cursor-pointer bg-gray-950 rounded-full p-1'
