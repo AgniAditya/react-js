@@ -2,20 +2,23 @@ import React, { useEffect, useState } from 'react'
 import ResultCard from './ResultCard'
 import { useDispatch, useSelector } from 'react-redux'
 import { getGIFs, getImages, getVidoes } from '../api/mediaAPI';
-import { clearResults, setResult } from '../store/features/searchSlice';
+import { clearResults, setError, setLoading, setResult } from '../store/features/searchSlice';
+import Loading from './Loading';
+import Error from './Error';
 
 function ResultContainer() {
   const [counter,setCounter] = useState(0)
   const disptach = useDispatch();
   const {query,activeTab,result,loading,error} = useSelector((store) => store.search)
 
-  useEffect(() => {
-    async function fetchData(){
+  async function fetchData(){
+    try {
       disptach(clearResults())
       if(query.trim() === "") {
         return;
       }
-
+      disptach(setLoading())
+      
       let data;
       if(activeTab === "photo"){
         const res = await getImages(query);
@@ -24,14 +27,13 @@ function ResultContainer() {
             id: photo.id,
             type: "photo",
             title: photo.alt_description,
-            src: photo.urls.full,
-            thumbnail: photo.urls.thumb
+            src: photo.urls.small,
+            thumbnail: photo.urls.small
           })
         })
       }
       else if(activeTab === "video"){
         const res = await getVidoes(query);
-        console.log(res);
         data = res.map((video) => {
           return ({
             id: video.id,
@@ -55,14 +57,19 @@ function ResultContainer() {
         })
       }
       disptach(setResult(data))
+    } catch (error) {
+      disptach(setError(error.message))
     }
+  }
+  useEffect(() => {
     fetchData()
-
   },[activeTab,query])
 
   return (
-    <div className='w-full h-fit justify-center flex flex-wrap gap-5 p-5'>
-      {result.map((_,i) => <ResultCard key={i} index={i}/>)}
+    <div className='w-full justify-center flex flex-wrap gap-5 p-5'>
+      {result.map((_,i) => <ResultCard key={i} index={i}/> )}
+      {loading ? <Loading /> : <></>}
+      {error ? <Error message={error.message}/> : <></>}
     </div>
   )
 }

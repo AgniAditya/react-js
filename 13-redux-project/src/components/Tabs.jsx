@@ -10,7 +10,7 @@ function Tabs() {
     <div className="flex gap-5">
         {tabs.map((tab,index) => {
             return <button 
-            className={`${activeTab === tab ? 'bg-gray-500' : 'bg-gray-700'}  rounded capitalize px-4 py-2 active:scale-95 text-[#F5FAFF]`}
+            className={`${activeTab === tab ? 'bg-gray-500' : 'bg-gray-700'}  rounded capitalize px-4 py-2 active:scale-95 text-[#F5FAFF] cursor-pointer`}
             key={index}
             onClick={() => {
                 disptach(setActiveTab(tab))
