@@ -14,13 +14,16 @@ function ResultContainer() {
   async function fetchData(){
     try {
       disptach(clearResults())
-      if(query.trim() === "") {
+      if(query.trim() === "" && activeTab !== "collections") {
         return;
       }
       disptach(setLoading())
       
       let data;
-      if(activeTab === "photo"){
+      if(activeTab === "collections"){
+        data = JSON.parse(localStorage.getItem("collections")) || [];
+      }
+      else if(activeTab === "photo"){
         const res = await getImages(query);
         data = res.map((photo) => {
           return ({
@@ -44,7 +47,7 @@ function ResultContainer() {
           })
         })
       }
-      else{
+      else if(activeTab === "gif"){
         const res = await getGIFs(query);
         data = res.map((gif) => {
           return ({
@@ -67,7 +70,7 @@ function ResultContainer() {
 
   return (
     <div className='w-full justify-center flex flex-wrap gap-5 p-5'>
-      {result.map((_,i) => <ResultCard key={i} index={i}/> )}
+      {result.map((obj) => <ResultCard key={obj.id} item={obj}/> )}
       {loading ? <Loading /> : <></>}
       {error ? <Error message={error.message}/> : <></>}
     </div>

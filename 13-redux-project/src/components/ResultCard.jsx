@@ -1,12 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { clearResults } from '../store/features/searchSlice';
+import { clearResults, setResult } from '../store/features/searchSlice';
 import { Star } from 'lucide-react'
 
 function ResultCard(props) {
-  const {result} = useSelector((store) => store.search)
+  const item = props.item
   const [hover,setHover] = useState(false)
-  const item = result[props.index]
+  const [exist,setExist] = useState(isExistInCollections())
+
+  function isExistInCollections() {
+    const oldItems = JSON.parse(localStorage.getItem("collections")) || [];
+    const isExist = oldItems.find((obj) => obj.id === item.id);
+    return isExist;
+  }
+
+  function addToCollections() {
+    const oldItems = JSON.parse(localStorage.getItem("collections")) || [];
+    if(isExistInCollections()) return;
+    const newItems = [...oldItems,item]
+    localStorage.setItem("collections",JSON.stringify(newItems))
+    setExist(true)
+  }
+
+  function removeFromCollections() {
+    const oldItems = JSON.parse(localStorage.getItem("collections"))
+    const newItems = oldItems.filter((obj) => obj.id !== item.id);
+    localStorage.setItem("collections",JSON.stringify(newItems))
+    setExist(false);
+    setResult(newItems)
+  }
 
   return (
     <div className='w-65 h-80 flex flex-col justify-center items-center overflow-hidden object-contain rounded-3xl hover:scale-105 relative'
@@ -25,11 +47,21 @@ function ResultCard(props) {
       <>
         <div className="absolute inset-0 bg-black/30"></div>
         <div className='absolute text-md font-semibold text-white bottom-2 p-5'>{item.title}</div>
-        <button 
-        className='absolute top-3 right-5 cursor-pointer bg-gray-950 rounded-full p-1'
-        >
-          <Star color='white'/>
-        </button>
+        {exist ? 
+          <button
+          onClick={() => removeFromCollections()} 
+          className='absolute top-3 right-5 cursor-pointer bg-gray-950 rounded-full p-1'
+          >
+            <Star fill='white'/>
+          </button> 
+        : 
+          <button
+          onClick={() => addToCollections()} 
+          className='absolute top-3 right-5 cursor-pointer bg-gray-950 rounded-full p-1'
+          >
+            <Star color='white'/>
+          </button>
+        }
       </>
       : <></>}
 
