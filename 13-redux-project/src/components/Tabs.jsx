@@ -3,12 +3,13 @@ import { setActiveTab } from "../store/features/searchSlice"
 
 function Tabs() {
     const tabs = ["photo","video","gif","collection"]
-    const activeTab = useSelector((state) => state.search.activeTab)
+    const {activeTab, query} = useSelector((state) => state.search)
     const disptach = useDispatch()
 
   return (
     <div className="flex gap-5">
-        {tabs.map((tab,index) => {
+        {query !== "" ?
+        tabs.map((tab,index) => {
             return <button 
             className={`${activeTab === tab ? 'bg-gray-500' : 'bg-gray-700'}  rounded capitalize px-4 py-2 active:scale-95 text-[#F5FAFF] cursor-pointer`}
             key={index}
@@ -18,7 +19,17 @@ function Tabs() {
             >
                 {tab}
             </button>
-        })}
+        })
+        :
+        <button 
+        className={`${activeTab === "collection" ? 'bg-gray-500' : 'bg-gray-700'}  rounded capitalize px-4 py-2 active:scale-95 text-[#F5FAFF] cursor-pointer`}
+        onClick={() => {
+            disptach(setActiveTab("collection"))
+        }}
+        >
+            collection
+        </button>  
+        }
     </div>
   )
 }
