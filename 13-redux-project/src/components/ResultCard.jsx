@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { clearResults, setResult } from '../store/features/searchSlice';
 import { Star } from 'lucide-react'
 import { addCollection, addToast, removeCollection, removeToast } from '../store/features/collectionSlice'
 
-function ResultCard(props) {
-  const item = props.item
+function ResultCard({ item }) {
+  const cardRef = useRef(null)
   const {activeTab} = useSelector((s) => s.search)
   const [hover,setHover] = useState(false)
   const [exist,setExist] = useState(isExistInCollection())
+  const [isVisible, setIsVisible] = useState(false)
   const dispatch = useDispatch();
 
   function isExistInCollection() {
@@ -17,17 +17,36 @@ function ResultCard(props) {
     return isExist;
   }
 
+  useEffect(() => {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if(entry.isIntersecting){
+            setIsVisible(true)
+            observer.unobserve(cardRef.current) 
+        }
+      })
+    },{ threshold: 0.1 })
+
+    if(cardRef.current){
+      observer.observe(cardRef.current)
+    }
+
+    return () => observer.disconnect()
+  },[])
+
   return (
-    <div className='w-65 h-80 flex flex-col justify-center items-center overflow-hidden object-contain rounded-3xl hover:scale-105 relative'
+    <div ref={cardRef} className='w-65 h-80 flex flex-col justify-center items-center overflow-hidden object-contain rounded-3xl hover:scale-105 relative'
     onMouseEnter={() => setHover(true)}
     onMouseLeave={() => setHover(false)}
     >
-      {item.type === "video" ? 
+      {isVisible ? 
+      item.type === "video" ? 
         (<video autoPlay muted poster={item.thumbnail} className='w-full h-full object-cover'>
           <source src={item.src}/>
         </video> ) 
         : 
         (<img className='w-full h-full object-cover' src={item.thumbnail} alt={item.title} typeof={item.type} />)
+      : <div className='w-full h-full bg-gray-200 animate-pulse rounded-3xl' />
       }
 
       {hover ? 
