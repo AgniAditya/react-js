@@ -21,7 +21,7 @@ function ResultContainer() {
       if(query.trim() === "" && activeTab !== "collection") {
         return;
       }
-      disptach(setLoading())
+      disptach(setLoading(true))
       
       let data;
       if(activeTab === "collection"){
@@ -31,7 +31,11 @@ function ResultContainer() {
       }
       else if(activeTab === "photo"){
         const res = await getImages(query,imagePage);
-        data = res.map((photo) => {
+        if(res.total_pages < imagePage) {
+          disptach(setLoading(false))
+          return;
+        }
+        data = res.photos.map((photo) => {
           return ({
             id: photo.id,
             type: "photo",
@@ -57,7 +61,11 @@ function ResultContainer() {
       }
       else if(activeTab === "gif"){
         const res = await getGIFs(query,gifOffest);
-        data = res.map((gif) => {
+        if(res.total_count === 0) {
+          disptach(setLoading(false))
+          return;
+        }
+        data = res.gifs.map((gif) => {
           return ({
             id: gif.id,
             type: "gif",
@@ -66,10 +74,12 @@ function ResultContainer() {
             thumbnail: gif.images.original.url
           })
         })
-        setGifOffset(prev => prev + 20);
+        setGifOffset(prev => prev + res.count);
       }
       disptach(appendResult(data))
     } catch (error) {
+      console.log(error);
+      
       disptach(setError(error.message))
     }
   }
@@ -78,6 +88,7 @@ function ResultContainer() {
     setImagePage(1)
     setVideoPage(1)
     setGifOffset(0)
+    fetchData()
   },[activeTab,query,items])
 
   useEffect(() => {
@@ -88,17 +99,20 @@ function ResultContainer() {
     },{ threshold: 0.1 })
 
     if(moreDataRef.current && activeTab !== "collection"){
+      console.log(moreDataRef.current);
       observer.observe(moreDataRef.current)
     }
+
+    return () => observer.disconnect()
   },[imagePage,videoPage,gifOffest])
 
   return (
     <div className='w-full justify-center flex flex-wrap gap-5 p-5'>
-      {result.map((obj,i) => <ResultCard key={i} item={obj}/> )}
+      {result.map((obj) => <ResultCard key={obj.id} item={obj}/> )}
       {!loading && !error && result.length === 0 ? <EmptyCollection /> : <></>}
       {loading ? <Loading /> : <></>}
       {error ? <Error message={error.message}/> : <></>}
-      <div ref={moreDataRef} className='w-full h-2'></div>
+      {!loading ? <div ref={moreDataRef} className='w-full h-2'></div> : <></> }
     </div>
   )
 }

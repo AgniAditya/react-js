@@ -4,6 +4,7 @@ import { Star } from 'lucide-react'
 import { addCollection, addToast, removeCollection, removeToast } from '../store/features/collectionSlice'
 
 function ResultCard({ item }) {
+  const videoRef = useRef(null)
   const cardRef = useRef(null)
   const {activeTab} = useSelector((s) => s.search)
   const [hover,setHover] = useState(false)
@@ -34,14 +35,26 @@ function ResultCard({ item }) {
     return () => observer.disconnect()
   },[])
 
+  useEffect(() => {
+    if(!videoRef.current) return;
+
+    if(hover){
+      videoRef.current.play()
+      videoRef.current.controls = true
+    } else {
+      videoRef.current.pause()
+      videoRef.current.controls = false
+    }
+  },[hover])
+
   return (
-    <div ref={cardRef} className='w-65 h-80 flex flex-col justify-center items-center overflow-hidden object-contain rounded-3xl hover:scale-105 relative'
+    <div ref={cardRef} className='w-65 h-80 flex flex-col justify-center items-center overflow-hidden object-contain rounded-3xl hover:scale-110 relative'
     onMouseEnter={() => setHover(true)}
     onMouseLeave={() => setHover(false)}
     >
       {isVisible ? 
       item.type === "video" ? 
-        (<video autoPlay muted poster={item.thumbnail} className='w-full h-full object-cover'>
+        (<video ref={videoRef} muted poster={item.thumbnail} className='w-full h-full object-cover'>
           <source src={item.src}/>
         </video> ) 
         : 
@@ -51,7 +64,6 @@ function ResultCard({ item }) {
 
       {hover ? 
       <>
-        <div className="absolute inset-0 bg-black/30"></div>
         <div className='absolute text-md font-semibold text-white bottom-2 p-5'>{item.title}</div>
         {exist ? 
           <button
@@ -79,7 +91,7 @@ function ResultCard({ item }) {
           </button>
         }
       </>
-      : <></>}
+      : <div className="absolute inset-0 bg-black/30"></div>}
 
     </div>
   )

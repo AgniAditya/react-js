@@ -11,7 +11,10 @@ export async function getImages(query,page=1) {
         headers: {Authorization: `Client-ID ${UNPLASH_KEY}`}
     })
     console.log(getImagesFromUnplash.data);
-    return getImagesFromUnplash.data.results
+    return {
+        photos: getImagesFromUnplash.data.results,
+        total_pages: getImagesFromUnplash.data.total_pages
+    }
 }
 
 
@@ -24,15 +27,20 @@ export async function getVidoes(query,page=1,per_page=15) {
     return getVideosFromPexels.data.videos
 }
 
-export async function getGIFs(query,offset=0) {
+export async function getGIFs(query,offset=0,limit=20) {
     const getGIFsFromGIPHY = await axios.get("https://api.giphy.com/v1/gifs/search",{
         params: {
             api_key: GIPHY_KEY,
             q: query,
-            limit: 20,
+            limit: limit,
             offset: offset
         }
     })
     console.log(getGIFsFromGIPHY.data)
-    return getGIFsFromGIPHY.data.data
+    return {
+        gifs: getGIFsFromGIPHY.data.data,
+        count: getGIFsFromGIPHY.data.pagination.count,
+        offset: getGIFsFromGIPHY.data.pagination.offset,
+        total_count: getGIFsFromGIPHY.data.pagination.total_count
+    }
 }

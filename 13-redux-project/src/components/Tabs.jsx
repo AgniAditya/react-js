@@ -7,7 +7,7 @@ function Tabs() {
     const disptach = useDispatch()
 
   return (
-    <div className="flex gap-5">
+    <div className="flex gap-5 justify-center">
         {query !== "" ?
         tabs.map((tab,index) => {
             return <button 
