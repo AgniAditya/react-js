@@ -64,7 +64,6 @@ function ResultCard({ item }) {
 
       {hover ? 
       <>
-        <div className='absolute text-md font-semibold text-white bottom-2 p-5'>{item.title}</div>
         {exist ? 
           <button
           onClick={() => {
@@ -91,7 +90,11 @@ function ResultCard({ item }) {
           </button>
         }
       </>
-      : <div className="absolute inset-0 bg-black/30"></div>}
+      : 
+      <>
+      <div className="absolute inset-0 bg-black/30"></div>
+      <div className='absolute text-md font-semibold text-white bottom-2 p-5'>{item.title}</div>
+      </>}
 
     </div>
   )
