@@ -7,7 +7,7 @@ import { NotesContext } from '../context/notesContext'
 function NoteBox(props) {
     const [editable,setEditable] = useState(false);
     const [value,setValue] = useState(props.content);
-    const [notes,setNotes] = useContext(NotesContext)
+    const [_,notes,setNotes] = useContext(NotesContext)
     
     function setContent(e) {
         setValue(e.target.value)
@@ -15,15 +15,19 @@ function NoteBox(props) {
     function editNote() {
         setEditable(!editable)
         if(editable){
-            const notes = JSON.parse(localStorage.getItem('notes'));
-            notes[props.id].content = value;
-            localStorage.setItem('notes',JSON.stringify([...notes]));
+            const updatedNotes = notes.map((note) => {
+                if(note.id === props.id){
+                    return { ...note, content: value};
+                }
+                return note;
+            })
+            localStorage.setItem('notes',JSON.stringify(updatedNotes));
+            setNotes(updatedNotes)
         }
     }
     function deleteNote(){
-        const deletedNote = notes.find((_,index) => index === props.id)
-        const newNotes = notes.filter((_,index) => {
-            return index !== props.id;
+        const newNotes = notes.filter((note) => {
+            return note.id !== props.id;
         })
         localStorage.setItem('notes',JSON.stringify(newNotes))
         setEditable(false)
@@ -33,7 +37,7 @@ function NoteBox(props) {
     return (
     <div className={`w-50 h-50 md:w-60 md:h-60 rounded-2xl bg-${props.color}-400 p-2 flex flex-col items-center justify-between text-sm`}>
         <textarea
-        defaultValue={value}
+        value={value}
         disabled={!editable} 
         onChange={(e) => setContent(e)}
         className={`w-full h-full p-2 resize-none border-none outline-none notes-scroll rounded-2xl focus:outline-none ${editable ? `bg-gray-200` : ''}`}

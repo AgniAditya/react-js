@@ -4,8 +4,8 @@ import { useContext } from 'react'
 import { NotesContext } from '../context/notesContext'
 
 function SideBar() {
-    const [notes,setNotes] = useContext(NotesContext)
-    const [showColors,setShowColors] = useState(false)
+    const [showAddNotesColors,notes,setNotes] = useContext(NotesContext)
+    const [showColors,setShowColors] = useState(showAddNotesColors)
 
     function addNewNote(e) {
         const content = "";
@@ -15,7 +15,12 @@ function SideBar() {
             day: "2-digit",
             year: "numeric",
         });
-        const newNote = {content,date,color};
+        const newNote = {
+            id: crypto.randomUUID(),
+            content,
+            date,
+            color
+        };
         const notesData = [newNote,...notes];
         localStorage.setItem('notes',JSON.stringify(notesData));
         setNotes(notesData);
@@ -27,7 +32,10 @@ function SideBar() {
             Docket
         </div>
         <div className='flex flex-col items-center gap-8'>
-            <button onClick={() => setShowColors(!showColors)} className='bg-black w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-700'>
+            <button onClick={() => {
+                setShowColors(!showColors)
+                localStorage.setItem("showAddNotesColors",JSON.stringify(!showColors));
+                }} className='bg-black w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-700'>
                 <Plus color="#ffffff" />
             </button>
             {showColors ? 
